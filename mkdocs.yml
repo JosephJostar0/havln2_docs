@@ -1,0 +1,31 @@
+site_name: HA-VLN Docs
+site_description: Vision-Language Navigation Documentation
+repo_url: https://github.com/F1y1113/HA-VLN
+repo_name: F1y1113/HA-VLN
+theme:
+  name: material
+  language: en
+
+plugins: []
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+
+extra_javascript:
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Quick Start:
+      - Dependencies: quick_start/dependencies.md
+      - Installation Steps: quick_start/installation.md
+      - Data Download: quick_start/data.md
+      - Agent Integration: quick_start/integration.md
+  - API Document:
+      - Human State Queries: api/human_state.md
+      - Dynamic Scene Updates: api/scene_updates.md
+      - Collision Checks: api/collision_checks.md
