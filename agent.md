@@ -85,10 +85,39 @@ class HAVLNWrapper(Env):
 
 ## 3. Dataset and Vocabulary Level
 
-The HA-R2R dataset contains newly added vocabulary describing human behaviors. If the Agent uses a fixed vocabulary maintained in a static file (e.g., `.txt`), an expansion operation is required to avoid Out-Of-Vocabulary (OOV) errors. (Note: Agents using pre-trained models with built-in Tokenizers can skip this step).
+The HA-R2R dataset contains newly added vocabulary describing human behaviors. For most modern VLN agents that use pre-trained language models (e.g., BERT), the dataset provides pre-processed BERT tokenized files (`*_bertidx.json.gz`) for all splits. These files contain pre-computed BERT token indices for all instructions, eliminating the need for manual vocabulary expansion.
 
-### 3.1 Vocabulary Expansion Script
-The following script extracts new vocabulary from the HA-R2R dataset and appends it to the end of the existing vocabulary file.
+### 3.1 Pre-processed BERT Tokenized Files
+The following BERT tokenized files are available in the HA-R2R dataset:
+
+| Split | File Path |
+|-------|-----------|
+| Train | `Data/HA-R2R/train/train_bertidx.json.gz` |
+| Val Seen | `Data/HA-R2R/val_seen/val_seen_bertidx.json.gz` |
+| Val Unseen | `Data/HA-R2R/val_unseen/val_unseen_bertidx.json.gz` |
+| Test | `Data/HA-R2R/test/test_bertidx.json.gz` |
+| Test GT | `Data/HA-R2R/test/test_gt_bertidx.json.gz` |
+
+### 3.2 Usage in Agent Implementation
+When implementing an agent that uses BERT-based language models, you can directly load these pre-processed token indices instead of tokenizing instructions at runtime. This ensures consistency and improves performance.
+
+**Example usage:**
+```python
+import gzip
+import json
+
+def load_bert_indices(file_path):
+    """Load pre-processed BERT token indices from gzipped JSON file"""
+    with gzip.open(file_path, 'rt', encoding='utf-8') as f:
+        data = json.load(f)
+    return data
+
+# Load token indices for training split
+bert_indices = load_bert_indices("Data/HA-R2R/train/train_bertidx.json.gz")
+```
+
+### 3.3 Legacy Vocabulary Expansion (For Non-BERT Agents)
+For agents that use fixed vocabulary files (e.g., `.txt` word lists), vocabulary expansion may still be necessary. The following script extracts new vocabulary from the HA-R2R dataset:
 
 ```python
 import json
