@@ -104,7 +104,7 @@ pip install webdataset==0.1.40
 # 1. Download and extract Matterport3D Dataset 
 # Requires download_mp.py from official Matterport3D sources
 python3 download_mp.py -o Data/scene_datasets --task habitat
-unzip Data/scene_datasets/v1/tasks/mp3d_habitat.zip -d Data/scene_datasets/mp3d
+unzip Data/scene_datasets/v1/tasks/mp3d_habitat.zip -d Data/scene_datasets/
 
 # 2. Download and extract HA-R2R and HAPS 2.0 datasets
 bash scripts/download_data.sh
