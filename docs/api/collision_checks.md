@@ -21,7 +21,7 @@ if "collisions_detail" in info:
 
 ### Calculate_Metric
 
-- Purpose: Uses Oracle baseline collision statistics to compute net new collision rate (TCR), CR, and strict SR.
+- Purpose: Uses the metric implementation's pre-computed unavoidable collision component to compute net human-aware TCR, CR, and strict SR.
 - When to call: Offline evaluation after an episode ends.
 
 ```python

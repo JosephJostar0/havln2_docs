@@ -1,5 +1,5 @@
 site_name: HA-VLN Docs
-site_description: Vision-Language Navigation Documentation
+site_description: Participant documentation for HA-VLN
 repo_url: https://github.com/F1y1113/HA-VLN
 repo_name: F1y1113/HA-VLN
 theme:
@@ -20,18 +20,20 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 nav:
-  - Quick Start:
+  - Start Here: index.md
+  - 1. Install HASimulator And Get Data: participant/install_and_data.md
+  - 2. Develop Your Agent: participant/develop_agent.md
+  - 3. Test Your Agent: participant/test_agent.md
+  - Reference:
       - Dependencies: quick_start/dependencies.md
       - Installation Steps: quick_start/installation.md
       - Data Download: quick_start/data.md
-      - Agent Integration: quick_start/integration.md
-      - Challenge Participation: quick_start/challenge_participation.md
-  - API Document:
+      - Agent Integration Notes: quick_start/integration.md
       - Human State Queries: api/human_state.md
       - Dynamic Scene Updates: api/scene_updates.md
       - Collision Checks: api/collision_checks.md
       - Evaluation Metrics: api/evaluation_metrics.md
-  - Challenge:
+  - Challenge Runtime:
       - Overview: challenge/overview.md
       - Getting Started: challenge/getting_started.md
       - Agent Integration: challenge/integration_guide.md

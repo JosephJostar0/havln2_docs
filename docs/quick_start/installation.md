@@ -2,7 +2,9 @@
 
 Official HA-VLN repository: https://github.com/F1y1113/HA-VLN
 
-The following installation flow is ordered for practical HA-VLN runtime setup.
+The following installation flow is the participant-facing default setup for HA-VLN.
+
+This documentation uses a Python 3.8 based environment as the default path for better compatibility on modern GPUs and modern Linux environments.
 
 ### 1. Clone Repository
 
@@ -11,21 +13,30 @@ git clone https://github.com/F1y1113/HA-VLN.git
 cd HA-VLN
 ```
 
-### 2. Create Legacy-Compatible Runtime
+### 2. Create the Runtime Environment
 
 ```bash
-conda create -n havlnce python=3.7 gcc_linux-64=9 gxx_linux-64=9 cudatoolkit=11.1 -c conda-forge -y
+conda create -n havlnce python=3.8 gcc_linux-64=11 gxx_linux-64=11 sysroot_linux-64=2.17 -c conda-forge -y
 conda activate havlnce
+
+conda install -c "nvidia/label/cuda-11.8.0" cuda-toolkit -y
+pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 --index-url https://download.pytorch.org/whl/cu118
+
+export CC=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-gcc
+export CXX=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-g++
+export CUDA_HOME=$CONDA_PREFIX
 ```
 
 ### 3. Install Habitat-Sim and Habitat-Lab
 
 ```bash
-conda install -c aihabitat -c conda-forge habitat-sim=0.1.7 headless -y
+conda install -c conda-forge python-lmdb libxcrypt libffi -y
+conda install -c aihabitat -c conda-forge "habitat-sim=0.1.7=*headless*" -y
 
 git clone --branch v0.1.7 https://github.com/facebookresearch/habitat-lab.git
 cd habitat-lab
-pip install msgpack
+pip install msgpack "numpy<1.24.0" tensorboard
+sed -i 's/tensorflow==1.13.1/# tensorflow==1.13.1/g' habitat_baselines/rl/requirements.txt
 pip install -r requirements.txt
 pip install -r habitat_baselines/rl/requirements.txt
 python setup.py develop --all
@@ -39,26 +50,53 @@ cd HASimulator
 git clone https://github.com/IDEA-Research/GroundingDINO.git
 cd GroundingDINO
 
+rm -rf build/ dist/ *.egg-info
 pip install "safetensors==0.3.1" "huggingface-hub==0.16.4" \
-	"tokenizers==0.13.3" "transformers==4.30.2" "timm==0.9.2"
-
+    "tokenizers==0.13.3" "transformers==4.30.2" "timm==0.9.2"
 sed -i 's/supervision.*/supervision==0.11.1/g' requirements.txt
-
-SYSROOT_TYPES="$CONDA_PREFIX/x86_64-conda-linux-gnu/sysroot/usr/include/linux/types.h"
-chmod +w "$SYSROOT_TYPES"
-sed -i 's/typedef __signed__ __int128/\/\/ typedef __signed__ __int128/g' "$SYSROOT_TYPES"
-sed -i 's/typedef unsigned __int128/\/\/ typedef unsigned __int128/g' "$SYSROOT_TYPES"
-
 pip install ninja
 pip install -e .
 cd ../..
 ```
 
-### 5. Verify Runtime
+If GroundingDINO compilation hits `__int128` typedef errors, patch the conda sysroot header before retrying:
 
-At minimum, verify the following two checks:
+```bash
+SYSROOT_TYPES="$CONDA_PREFIX/x86_64-conda-linux-gnu/sysroot/usr/include/linux/types.h"
+chmod +w "$SYSROOT_TYPES"
+sed -i 's/typedef __signed__ __int128/\/\/ typedef __signed__ __int128/g' "$SYSROOT_TYPES"
+sed -i 's/typedef unsigned __int128/\/\/ typedef unsigned __int128/g' "$SYSROOT_TYPES"
+```
+
+### 5. Install Agent-Side Python Requirements
+
+```bash
+pip install -r agent/VLN-CE/requirements.txt
+pip install "Pillow<9.0.0" setuptools webdataset==0.1.40
+
+# Reassert the expected PyTorch stack in case pip changed it
+pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 --index-url https://download.pytorch.org/whl/cu118
+```
+
+### 6. Apply the Gym Compatibility Patch
+
+Modern versions of `gym` do not allow `Discrete(0)` initialization in the old code path used here.
+
+```bash
+sed -i 's/spaces.Discrete(0)/spaces.Discrete(4)/g' habitat-lab/habitat/tasks/vln/vln.py
+```
+
+### 7. Verify Runtime
+
+At minimum, verify these checks:
 
 ```bash
 python -c "import torch; print(torch.__version__)"
 python -c "import habitat_sim; print('habitat-sim OK')"
 ```
+
+### FAQ: Why does this page use Python 3.8 instead of the original README's Python 3.7?
+
+The original README reflects an older environment. The participant docs use Python 3.8 as the default path because it is a more practical compatibility baseline for newer GPUs and newer CUDA/PyTorch combinations.
+
+For participants, the important takeaway is simple: follow the Python 3.8 path in this documentation unless you have a specific reason to maintain an older legacy environment.

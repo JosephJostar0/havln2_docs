@@ -2,19 +2,19 @@
 
 Official HA-VLN repository: https://github.com/F1y1113/HA-VLN
 
-This page mainly helps users on newer Linux distributions (for example Ubuntu 22.04/24.04 and WSL) adapt HA-VLN dependencies in a stable and reproducible way.
+This page provides the participant-facing dependency setup for HA-VLN.
 
-If your Linux environment is already close to the original supported stack (older distro / toolchain), installing dependencies directly from the official repository instructions is also fine.
+The original repository README was written around a Python 3.7 and CUDA 11.1 era stack. For broader compatibility on newer Linux distributions and newer NVIDIA GPUs, the participant docs use a Python 3.8 based environment as the default path.
 
 ### System Packages
 
-Install the common HA-VLN system dependencies first (graphics, build tools, and crypto-related libraries):
+Install the common HA-VLN system dependencies first:
 
 ```bash
 sudo apt-get update
 sudo apt-get install -y --no-install-recommends \
-	libjpeg-dev libglm-dev libgl1 libegl1-mesa-dev mesa-utils \
-	xorg-dev freeglut3-dev libcrypt-dev
+    libjpeg-dev libglm-dev libgl1 libegl1-mesa-dev mesa-utils \
+    xorg-dev freeglut3-dev libcrypt-dev
 ```
 
 ### Python Environment
@@ -22,20 +22,36 @@ sudo apt-get install -y --no-install-recommends \
 Use conda to create and manage the environment:
 
 ```bash
-conda create -n havlnce python=3.7 gcc_linux-64=9 gxx_linux-64=9 cudatoolkit=11.1 -c conda-forge -y
+conda create -n havlnce python=3.8 gcc_linux-64=11 gxx_linux-64=11 sysroot_linux-64=2.17 -c conda-forge -y
 conda activate havlnce
 ```
 
-### Core Python Packages (Training Runtime)
-
-The following dependencies are required for HA-VLN training/evaluation:
+If you plan to compile GPU-dependent extensions, export the conda toolchain before continuing:
 
 ```bash
-# Full CUDA toolkit (for nvcc)
-conda install -c conda-forge cudatoolkit-dev=11.1.1 -y
+export CC=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-gcc
+export CXX=$CONDA_PREFIX/bin/x86_64-conda-linux-gnu-g++
 export CUDA_HOME=$CONDA_PREFIX
-
-# PyTorch (CUDA 11.1)
-pip install torch==1.9.1+cu111 torchvision==0.10.1+cu111 \
-	-f https://download.pytorch.org/whl/torch_stable.html
 ```
+
+### Core Python Packages
+
+Install a modern CUDA-compatible stack for participant development:
+
+```bash
+# Full CUDA toolkit for compilation and runtime compatibility
+conda install -c "nvidia/label/cuda-11.8.0" cuda-toolkit -y
+
+# HA-VLN-compatible PyTorch stack
+pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 --index-url https://download.pytorch.org/whl/cu118
+```
+
+### FAQ: Why do these docs use Python 3.8 instead of the README's Python 3.7?
+
+The short answer is compatibility.
+
+- the original repository README reflects an older Python 3.7 era environment
+- newer GPUs may require a newer CUDA and PyTorch combination than the Python 3.7 path typically supports well
+- the participant docs therefore use Python 3.8 as the default installation path for broader compatibility on modern hardware
+
+If you are working on older hardware with an older toolchain, the original Python 3.7 path may still be possible, but it is not the default participant recommendation in this documentation.

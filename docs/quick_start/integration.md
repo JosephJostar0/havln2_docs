@@ -2,13 +2,13 @@
 
 Official HA-VLN repository: https://github.com/F1y1113/HA-VLN
 
-The agent sits between the environment layer and API layer, making this page the bridge from runnable setup to custom integration.
+This page explains how to connect your own agent to the HA-VLN environment.
 
-This page extends the minimum setup with practical details from the original integration notes, including config switching, dynamic clock synchronization, vocabulary updates, strict metrics, and optional visualization hooks.
+The goal of this page is practical integration, not to force a specific model architecture. The repository `agent/` directory is reference material only. What matters for participants is that their own agent can run correctly with the HA-VLN task configuration, simulator APIs, and evaluation workflow.
 
 ### 1. Redirect Base Task Config
 
-Redirect `BASE_TASK_CONFIG_PATH` in agent configuration to the HA-VLN task config:
+Redirect `BASE_TASK_CONFIG_PATH` in your agent configuration to the HA-VLN task config:
 
 ```yaml
 BASE_TASK_CONFIG_PATH: path/to/HASimulator/config/HAVLNCE_task.yaml
@@ -24,26 +24,26 @@ SIMULATOR:
 
 TASK:
   MEASUREMENTS:
-		- COLLISIONS_DETAIL
-		- DISTANCE_TO_HUMAN
+    - COLLISIONS_DETAIL
+    - DISTANCE_TO_HUMAN
 ```
 
 Important path note:
 
-- `HAVLNCE_task.yaml` often contains relative paths such as `../Data/...`.
-- These paths are resolved against the process CWD where your agent starts.
-- If your training/eval launcher runs in another directory, switch those paths to absolute paths to avoid silent file-not-found failures.
+- `HAVLNCE_task.yaml` often contains relative paths such as `../Data/...`
+- these paths are resolved against the process CWD where your agent starts
+- if your launcher runs in another directory, switch those paths to absolute paths to avoid silent file-not-found failures
 
-### 2. Select the Experimental Baseline
+### 2. Choose the Task Variant You Need
 
-For ablation studies, switch only `BASE_TASK_CONFIG_PATH` while keeping the rest of your agent code unchanged:
+If you are comparing settings or running ablations, switch only `BASE_TASK_CONFIG_PATH` while keeping the rest of your agent code unchanged:
 
-- `HAVLNCE_task.yaml`: Dynamic environment + HA-R2R instructions.
-- `HAVLNCE_R2R_task.yaml`: Dynamic environment + original R2R instructions.
-- `VLNCE_task.yaml`: Static environment + original R2R instructions.
-- `VLNCE_HAR2R_task.yaml`: Static environment + HA-R2R instructions.
+- `HAVLNCE_task.yaml`: dynamic environment + HA-R2R instructions
+- `HAVLNCE_R2R_task.yaml`: dynamic environment + original R2R instructions
+- `VLNCE_task.yaml`: static environment + original R2R instructions
+- `VLNCE_HAR2R_task.yaml`: static environment + HA-R2R instructions
 
-### 3. Implement Environment Wrapper Synchronization
+### 3. Synchronize with the Dynamic Human Timeline
 
 Consume dynamic-scene clock signals before `step()` so each agent action runs on the latest physical state.
 
@@ -72,57 +72,25 @@ class HAVLNWrapper(Env):
 
 Why this matters:
 
-- HA-VLN advances human motions using a child-thread clock.
-- Without `_handle_signals()` before each step, policy actions may be evaluated on stale geometry / stale NavMesh.
+- HA-VLN advances human motions using a child-thread clock
+- without `_handle_signals()` before each step, policy actions may be evaluated on stale geometry or stale NavMesh
 
-### 4. Expand Vocabulary (if needed)
+### 4. Use the Provided Text Resources First
 
-If you use a fixed vocabulary model (not an end-to-end tokenizer), run vocabulary expansion to avoid OOV tokens introduced by HA-R2R.
+Before building custom text preprocessing, check the text resources already bundled with HA-R2R:
 
-Minimal expansion logic:
+- the main dataset files such as `Data/HA-R2R/train/train.json.gz` include `instruction_vocab.word_list`
+- the public splits also provide pre-tokenized BERT-format files such as `train_bertidx.json.gz`, `val_seen_bertidx.json.gz`, and `val_unseen_bertidx.json.gz`
 
-```python
-import json
-import gzip
-import re
-from pathlib import Path
+Recommended guidance:
 
-def clean_text(text: str):
-    text = text.lower()
-    text = re.sub(r'([.?!,;:/\\()\[\]"\'\-])', r' \1 ', text)
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text.split()
+- if your method uses a classic word-level vocabulary, first try the vocabulary bundled in the HA-R2R dataset files
+- if your method uses a BERT-style text encoder, first try the provided `*_bertidx.json.gz` files
+- only build or extend your own text pipeline if your method truly requires it
 
-def update_vocabulary(ha_r2r_dir: str, existing_vocab_path: str, output_vocab_path: str):
-    with open(existing_vocab_path, 'r', encoding='utf-8') as f:
-        existing_words = [line.strip() for line in f.readlines()]
+### 5. Integrate Human-Aware Metrics in Eval
 
-    vocab_set = set(existing_words)
-    new_words = []
-
-    for split in ['train', 'val_seen', 'val_unseen']:
-        json_file = Path(ha_r2r_dir) / split / f"{split}.json.gz"
-        if not json_file.exists():
-            continue
-
-        with gzip.open(json_file, 'rt', encoding='utf-8') as f:
-            data = json.load(f)
-
-        for item in data:
-            for instruction in item.get('instructions', []):
-                for token in clean_text(instruction):
-                    if token not in vocab_set:
-                        vocab_set.add(token)
-                        new_words.append(token)
-
-    with open(output_vocab_path, 'w', encoding='utf-8') as f:
-        for word in existing_words + new_words:
-            f.write(f"{word}\n")
-```
-
-### 5. Integrate Strict Metrics in Eval Loop
-
-After each episode ends, inject TCR/CR/SR and strip high-dimensional fields to avoid aggregation errors:
+After each episode ends, you can inject TCR, CR, and strict SR and strip high-dimensional fields before aggregation:
 
 ```python
 from HASimulator.metric import Calculate_Metric
@@ -137,15 +105,15 @@ for key in ["distance_to_human", "collisions_detail"]:
 
 Metric semantics:
 
-- `TCR`: Net new trajectory collisions after excluding Oracle baseline scene collisions.
-- `CR`: Collision flag for the episode.
-- `SR`: Strict success rate under the extra condition `TCR == 0`.
+- `TCR`: net new trajectory collisions after excluding the pre-computed unavoidable collision component
+- `CR`: collision flag for the episode
+- `SR`: strict success rate under the extra condition `TCR == 0`
 
 ### 6. Optional Human Counting and Visualization Hook
 
-If `HUMAN_COUNTING: True`, ensure GroundingDINO is installed and the absolute weight path is correctly configured in `detector.py` before evaluation.
+If `HUMAN_COUNTING: True`, ensure GroundingDINO is installed and the weight path is configured correctly in `detector.py` before evaluation.
 
-You can optionally stitch observation frames and instruction text inside the evaluation loop, then export MP4 videos for debugging and comparison.
+You can also stitch observation frames and instruction text inside the evaluation loop for debugging videos.
 
 ```python
 from copy import deepcopy
@@ -158,7 +126,7 @@ for i in range(envs.num_envs):
     if len(config.VIDEO_OPTION) > 0:
         if config.TASK_CONFIG.SIMULATOR.HUMAN_COUNTING:
             observations_ = deepcopy(observations)
-            observations_[i]['rgb'] = detected_img[i]
+            observations_[i]["rgb"] = detected_img[i]
             frame = observations_to_image(observations_[i], infos[i])
         else:
             frame = observations_to_image(observations[i], infos[i])
@@ -184,6 +152,6 @@ for i in range(envs.num_envs):
 
 Use the API pages together with this integration guide:
 
-- Human distance / angle and counting hooks: `api/human_state.md`
-- Clock sync and forced frame controls: `api/scene_updates.md`
-- Collision detail and strict TCR metrics: `api/collision_checks.md`
+- human distance, angle, and counting hooks: `api/human_state.md`
+- clock sync and forced frame controls: `api/scene_updates.md`
+- collision detail and strict human-aware metrics: `api/collision_checks.md`

@@ -1,254 +1,150 @@
-# HA-VLN Challenge: Getting Started
+# HA-VLN Challenge Getting Started
 
-This guide provides a step-by-step process for participating in the HA-VLN challenge. Follow these steps to set up your environment, integrate your agent, and generate valid submissions.
+This guide describes the current challenge participation flow based on the official Docker image and the executable submission package interface.
 
-## Quick Overview
+## Quick Path
 
-1. **Set up environment** - Install dependencies and configure HA-VLN
-2. **Download data** - Get the HA-R2R dataset and human motion models
-3. **Integrate your agent** - Adapt your VLN agent to work with HA-VLN
-4. **Test on validation splits** - Verify your integration works correctly
-5. **Generate test submission** - Run inference on the test split
-6. **Validate and submit** - Check your submission format and submit
+1. prepare the repository and public data locally
+2. prepare your submission directory with a `run.sh` entrypoint
+3. copy `docker-compose-template.yml` to `docker-compose.yml`
+4. replace host-side mount paths with your absolute local paths
+5. run the official image locally
+6. inspect outputs written to `/app/result`
 
-## Step 1: Environment Setup
+## 1. Prepare Local Assets
 
-### 1.1 System Requirements
-- Linux system
-- Conda package manager
-- (Optional) NVIDIA GPU for accelerated rendering
+Before using the Docker workflow, make sure you have:
 
-### 1.2 Install Dependencies
-Follow the [Quick Start: Dependencies](../quick_start/dependencies.md) guide to install system packages and create the Conda environment.
+- a local checkout of this repository
+- the public development data you need under a local `Data` directory
+- your own agent code packaged in a separate submission directory or in a prepared agent workspace
+- Docker and Docker Compose available on the host
 
-### 1.3 Install HA-VLN
-Follow the [Quick Start: Installation](../quick_start/installation.md) guide to install:
-- Habitat-Sim and Habitat-Lab
-- GroundingDINO (for human counting, optional)
-- Agent requirements
+If your method needs extra Python packages or custom runtime setup, install them from inside `run.sh` or from scripts called by `run.sh`.
 
-## Step 2: Data Download
+## 2. Pull the Official Evaluation Image
 
-### 2.1 Download Datasets
-```bash
-# Download HA-R2R and HAPS 2.0 datasets
-bash scripts/download_data.sh
-
-# Download Matterport3D scenes (requires access)
-# Follow instructions in record_env.md
-```
-
-### 2.2 Dataset Structure
-After downloading, you should have:
-- `Data/HA-R2R/train/` - Training split
-- `Data/HA-R2R/val_seen/` - Validation seen split
-- `Data/HA-R2R/val_unseen/` - Validation unseen split
-- `Data/HA-R2R/test/` - Test split (for inference)
-- `Data/HAPS2_0/` - Human motion models
-
-### 2.3 Verify Data
-Check that the test split is available:
-```bash
-ls Data/HA-R2R/test/
-# Should show: test.json.gz and test_bertidx.json.gz
-```
-
-## Step 3: Agent Integration
-
-### 3.1 Review Integration Guide
-Read the [Agent Integration Guide](integration_guide.md) to understand:
-- How to configure your agent for HA-VLN
-- How to handle dynamic human activities
-- How to collect action sequences
-
-### 3.2 Configure Your Agent
-Update your agent's configuration to use the HA-VLN environment:
-
-```yaml
-# Example configuration update
-BASE_TASK_CONFIG_PATH: HASimulator/config/HAVLNCE_task.yaml
-```
-
-### 3.3 Implement Action Collection
-Add action collection to your evaluation loop:
-
-```python
-# Pseudocode for action collection
-actions = []
-while not episode_over:
-    action = agent.act(observation)
-    actions.append(action)
-    observation = env.step(action)
-    
-# Save actions for this episode
-save_episode_actions(episode_id, actions)
-```
-
-## Step 4: Testing on Validation Splits
-
-### 4.1 Run Validation
-Before generating test submissions, test your agent on validation splits:
+Pull the official image referenced by the repository compose template:
 
 ```bash
-# Example command structure
-python your_agent.py \
-    --split val_unseen \
-    --output val_unseen_results.json
+docker pull ghcr.io/josephjostar0/havln-eval-image:latest
 ```
 
-### 4.2 Check Metrics
-Verify that your agent produces reasonable metrics on validation splits. This helps catch integration issues early.
+## 3. Create a Local Compose File
 
-### 4.3 Validate Action Sequences
-Ensure your action sequences meet the requirements:
-- All actions are in {0, 1, 2, 3}
-- Each episode ends with STOP (0)
-- Sequences are 1-500 actions long
+Copy the template from the repository root:
 
-## Step 5: Generate Test Submission
-
-### 5.1 Run Inference on Test Split
 ```bash
-# Run inference on the test split
-python your_agent.py \
-    --split test \
-    --output my_submission.json \
-    --agent_name "YourAgentName"
+cp docker-compose-template.yml docker-compose.yml
 ```
 
-### 5.2 Submission Format
-Your submission must follow the [Submission Format Specification](submission_format.md):
-- JSON format with `episodes` array
-- Each episode must have: `episode_id`, `trajectory_id`, `scene_id`, `actions`
-- Include all 3408 test episodes
+Then edit the host-side paths in `docker-compose.yml` so that they mount:
 
-### 5.3 Example Submission Structure
-```json
-{
-  "episodes": [
-    {
-      "episode_id": "0",
-      "trajectory_id": "5732",
-      "scene_id": "mp3d/5ZKStnWn8Zo/5ZKStnWn8Zo.glb",
-      "actions": [1, 1, 2, 1, 0]
-    }
-    // ... 3407 more episodes
-  ],
-  "metadata": {
-    "agent_name": "YourAgentName",
-    "split": "test"
-  }
-}
+- your local `Data` directory to `/app/Data:rw`
+- your submission directory to `/app/agent:rw`
+- your local output directory to `/app/result:rw`
+
+## 4. Prepare the Submission Entry Script
+
+The current runtime contract expects the container to execute:
+
+```bash
+bash /app/agent/run.sh
 ```
 
-## Step 6: Validate and Submit
+Your submission package must therefore include a runnable `run.sh` file.
 
-### 6.1 Check Submission Completeness
-Verify your submission:
-- Contains exactly 3408 episodes
-- All required fields are present
-- Action sequences are valid
-- File is valid JSON
+A minimal example looks like this:
 
-### 6.2 File Size Check
-A typical submission file should be:
-- **Expected size**: 1-10 MB
-- **Too small (< 100KB)**: Likely missing episodes
-- **Too large (> 100MB)**: May include unnecessary data
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-### 6.3 Submit Your Results
-Follow the challenge submission instructions (to be announced) to submit your `my_submission.json` file.
+cd /app/agent
 
-## Common Pitfalls and Solutions
+# Install any submission-specific dependencies here if needed.
+# Example:
+# pip install -r requirements.txt
 
-### Pitfall 1: Missing Dependencies
-**Symptom**: Import errors for habitat_sim or HASimulator.
-**Solution**: Follow the installation guides carefully. Check Python version compatibility if using newer Python versions.
+python your_agent_entry.py --data-root /app/Data --output-dir /app/result
+```
 
-### Pitfall 2: Human Models Not Loading
-**Symptom**: No humans appear in the environment.
-**Solution**: Check that `ADD_HUMAN: True` is set in your configuration and the human model paths are correct.
+## 5. Run the Container Locally
 
-### Pitfall 3: Action Collection Issues
-**Symptom**: Submission has wrong number of episodes or invalid actions.
-**Solution**: Use the ActionCollector class from the integration guide and test on validation splits first.
+Start the evaluation service with:
 
-### Pitfall 4: Performance Issues
-**Symptom**: Inference is very slow.
-**Solution**: 
-- Use `ALLOW_SLIDING: True` to prevent getting stuck
-- Consider disabling human counting if not needed
-- Use appropriate batch sizes for your hardware
+```bash
+docker compose up
+```
 
-## Testing Checklist
+This is the fastest way to validate that your package can boot inside the official image and access the expected mounted paths.
 
-Before submitting, complete this checklist:
+## 6. Debug Interactively When Needed
 
-### Environment
-- [ ] Conda environment created and activated
-- [ ] Habitat-Sim and Habitat-Lab installed
-- [ ] HA-VLN dependencies installed
-- [ ] Data downloaded and accessible
+If you want to inspect the runtime before `run.sh` executes, open an interactive shell instead:
 
-### Agent Integration
-- [ ] Agent configured to use HA-VLN task
-- [ ] Action collection implemented
-- [ ] Tested on val_unseen split
-- [ ] Action sequences validated
+```bash
+docker compose run --rm --entrypoint bash evaluator
+```
 
-### Submission
-- [ ] Inference run on test split
-- [ ] Submission file contains 3408 episodes
-- [ ] All actions are valid (0, 1, 2, 3)
-- [ ] Each episode ends with STOP
-- [ ] JSON file is valid
+Useful checks inside the container include:
 
-## Next Steps
+```bash
+cd /app
+ls /app/Data
+ls /app/agent
+ls /app/result
+```
 
-### After Submission
-1. **Wait for evaluation** - Organizers will run your submission through the private evaluator
-2. **Receive results** - You'll get metrics (SR, TCR, NE, CR) for your submission
-3. **Leaderboard ranking** - Compare your results with other participants
+## 7. Validate on Public Splits First
 
-### Improving Your Agent
-- Analyze failure cases from validation splits
-- Consider human-aware navigation strategies
-- Optimize for both success rate and collision avoidance
-- Test different hyperparameters and architectures
+Before relying on any final challenge-facing workflow, validate your method on the public training or validation splits available in your local `Data` mount.
 
-## Support Resources
+This step is especially important for checking:
 
-### Documentation
-- [Agent Integration Guide](integration_guide.md) - Detailed integration instructions
-- [Submission Format](submission_format.md) - Complete format specification
-- [HA-VLN API](../api/) - Environment APIs and interfaces
-- [Quick Start](../quick_start/) - Installation and setup guides
+- path assumptions inside your code
+- model checkpoint loading
+- any extra dependency installation done from `run.sh`
+- exported logs or prediction artifacts under `/app/result`
 
-### Code Examples
-- Example submissions in `challenge/examples/`
-- Baseline agent code in `agent/`
-- Integration examples in this guide
+## 8. What to Export
 
-### Community
-- GitHub repository issues
-- Challenge announcement channels
-- Related research papers and benchmarks
+The current stable expectation is that your method writes any exported artifacts needed for inspection or downstream evaluation to `/app/result`.
 
-## Important Notes
+Typical outputs may include:
 
-### Development vs Submission
-- **Development**: Use train/val splits for training and validation
-- **Submission**: Only use test split for final inference
-- **No test tuning**: Do not tune hyperparameters on test results
+- prediction files
+- logs
+- copied checkpoints or metadata used for reproducibility
 
-### Fair Competition
-- Develop your own agent
-- Do not share test predictions
-- Follow the challenge rules and timeline
+If a later evaluator revision requires a stricter output schema, that should be documented explicitly at that time.
 
-### Timeline
-- Check challenge announcements for deadlines
-- Submit early to avoid last-minute issues
-- Allow time for validation and testing
+## Common Issues
 
-Good luck with the challenge! Remember to test thoroughly and submit valid, complete submissions.
+### `run.sh` is missing or not runnable
+
+Make sure your submission package contains `/app/agent/run.sh` and that the script can execute under `bash`.
+
+### Paths work locally but fail in Docker
+
+Use container paths inside your submission code:
+
+- `/app/Data`
+- `/app/agent`
+- `/app/result`
+
+Do not rely on host-side absolute paths once you are inside the container.
+
+### Extra dependencies are unavailable
+
+Install them from `run.sh` or from a helper script called by `run.sh`.
+
+### Results are not visible on the host
+
+Write exported artifacts to `/app/result`, not only to internal temporary directories.
+
+## Next Reading
+
+- [Challenge Overview](overview.md)
+- [Agent Integration Guide](integration_guide.md)
+- [Submission Format](submission_format.md)
