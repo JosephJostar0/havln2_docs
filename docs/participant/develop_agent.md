@@ -76,8 +76,11 @@ If you need low-level integration details such as wrapper synchronization, provi
 
 - [Agent Integration Notes](../quick_start/integration.md)
 
+If your eventual goal is the current Docker challenge workflow, treat this page as the method-development step in a local environment and then continue to the challenge runtime pages after your method runs locally. The executable challenge contract itself is defined by the challenge pages, not by this local-development guide.
+
 ## Next Step
 
 After your agent can run inside HA-VLN, move on to:
 
 - [Test Your Agent](test_agent.md)
+- [Challenge Getting Started](../challenge/getting_started.md)

@@ -1,6 +1,6 @@
 # HA-VLN Challenge Overview
 
-The current `challenge-next` package is moving from a research repository toward a challenge-ready delivery package. At this stage, the stable participant interface is an executable submission package that runs inside the official Docker image, not a fixed JSON-only upload contract.
+The current HA-VLN challenge workflow uses an agent/ package that runs inside the official Docker image, not a fixed JSON-only upload contract.
 
 ## Core Goal
 
@@ -17,66 +17,99 @@ The challenge should stay method-open. Participants are not restricted to a sing
 
 The current evaluation workflow is based on an official prebuilt Docker image and a mounted submission directory.
 
-### Runtime Contract
+### Mounted Paths
 
 During evaluation, the runtime mounts:
 
-- participant data mount at `/app/Data` (read-write)
-- participant submission package at `/app/agent` (read-write in the current validated compose setup)
-- participant output directory at `/app/result` (read-write)
+- participant data at `/app/Data` (read-write)
+- the participant challenge package at `/app/agent` (read-write in the current validated compose setup)
 
-The container entrypoint executes:
+The current local workflow also uses `/app/result` as the default output location for exported evaluation artifacts. That default output location is useful for local validation, but it should not yet be treated as the finalized stable submission artifact contract.
+
+### Official Evaluation Start
+
+The current compose template starts a long-lived container for manual validation. Participants then start evaluation inside the container with:
 
 ```bash
 bash /app/agent/run.sh
 ```
 
-This means the stable contract today is:
+Participants must therefore provide their own `/app/agent/run.sh`. In practice, the agent/ package should contain `run.sh`, agent code, model weights, and the official runner files.
 
-1. your submission must be packaged as runnable code
-2. your package must provide `/app/agent/run.sh`
-3. your code must read inputs from mounted paths inside the container
-4. your code should write exported artifacts to `/app/result`
+That script is participant-owned, but it is not an arbitrary evaluator contract. Its job is to prepare the participant-specific environment and then launch the official HA-VLN challenge runner for the mounted `/app/agent` package.
 
-## Public Development Data vs Organizer-Only Final Scoring
+### Official Runner Path Inside `/app/agent`
 
-Participants should assume that local development uses public training and validation data, while final challenge evaluation may use a different dataset mount under the same `/app/Data` path. The mount should remain writable because the runtime may generate mesh-related artifacts under `Data`.
+The current official runner path is built around:
 
-This is why the challenge documentation should avoid over-specifying evaluation details that are not part of the stable participant interface.
+- `/app/agent/run.py`
+- the evaluation flow `run.py -> eval.py`
+- the required run mode `--run-type eval`
+- the current challenge-facing config path `/app/agent/config/challenge_submission.yaml`
 
-## What Is Stable Right Now
+Participants may customize their own method code, adapters, checkpoints, and dependency setup behind this path, but they should not replace the official challenge runner with an arbitrary Python entrypoint.
+
+### Current Agent Adapter Entry
+
+Inside the official evaluation path, the current evaluator instantiates the participant method through the submission config section:
+
+- `CHALLENGE_AGENT.MODULE`
+- `CHALLENGE_AGENT.CONFIG`
+- optional `CHALLENGE_AGENT.FACTORY_FN`
+
+The current default factory name is `build_agent`. `CHALLENGE_AGENT.MODULE` should be a Python import path such as `submission.my_agent_adapter`.
+
+This means participants may choose their own adapter module path and method-specific configuration, while still entering through the official runner path under `/app/agent`.
+
+## Public Development Data
+
+Use the public training and validation data for local development. The `/app/Data` mount should remain writable because the runtime may generate mesh-related artifacts there.
+
+## Participant-Provided vs Official Runner Components
+
+Participants provide:
+
+- `/app/agent/run.sh`
+- participant-specific environment activation and dependency installation
+- participant method code, adapters, checkpoints, and any extra resources needed by that code
+- the adapter module and configuration selected through `CHALLENGE_AGENT`
+
+The official challenge runner defines:
+
+- the evaluation path `run.py -> eval.py`
+- the required run mode `--run-type eval`
+- the current config entry path `/app/agent/config/challenge_submission.yaml`
+- the expected mounted execution layout inside the official image
+
+## What Is Concrete Right Now
 
 The following pieces are already concrete in the repository:
 
 - the official image name in `docker-compose-template.yml`
-- the mounted container paths `/app/Data`, `/app/agent`, and `/app/result`
-- the entry script contract `bash /app/agent/run.sh`
+- the mounted container paths `/app/Data` and `/app/agent`
+- the current compose template includes the default output mount `/app/result`
+- the current default local output location `/app/result`
+- the participant start command `bash /app/agent/run.sh`
+- the current official runner path under `/app/agent`
 - the local compose-based workflow for participant-side validation
 
-## Subject To Change
-
-The following pieces are still intentionally lightweight and may change as the challenge package is finalized:
-
-- the final scoring pipeline details
-- whether a specific exported prediction file schema will be required
-- leaderboard policy and submission portal details
-
-## Participant Workflow
+## Workflow
 
 At a high level, the current participant workflow is:
 
 1. prepare the required data locally
-2. package your method as a runnable submission directory
-3. provide a `run.sh` entry script
-4. mount data, submission, and output paths through Docker Compose
-5. run the official image locally for integration testing
-6. export any predictions, logs, or result artifacts to `/app/result`
+2. prepare a mounted `/app/agent` package that follows the official challenge runner layout
+3. provide a participant-owned `run.sh` entry script
+4. mount data, submission, and output paths through Docker Compose, including `/app/result` as the current default output location
+5. start the official image locally, attach a shell, and use `run.sh` to prepare your method environment and launch the official runner in `eval` mode
+6. run the official image locally for integration testing
+7. inspect the exported outputs under `/app/result`
 
 ## Reference Code and Baselines
 
-The repository `agent/` directory should be understood as reference and baseline material. Participants do not need to use that codebase directly.
+The repository `agent/` directory should be understood as reference and baseline material. Participants do not need to adopt the repository's baseline method code directly.
 
-What participants must satisfy is the simulator and runtime contract built around `HASimulator`, the mounted challenge data, and the executable submission interface.
+What participants must satisfy is the simulator and runtime contract built around `HASimulator`, the mounted challenge data, and the official runner path under the mounted `/app/agent` package.
 
 ## Baselines and Documentation
 

@@ -2,7 +2,7 @@
 
 Official HA-VLN repository: https://github.com/F1y1113/HA-VLN
 
-The following installation flow is the participant-facing default setup for HA-VLN.
+The following installation flow is the default setup for HA-VLN.
 
 This documentation uses a Python 3.8 based environment as the default path for better compatibility on modern GPUs and modern Linux environments.
 

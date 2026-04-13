@@ -30,10 +30,21 @@ Read this after your agent can run and you want to validate it on the public wor
 
 - [Test Your Agent](participant/test_agent.md)
 
+## Using the Current Docker Challenge Runtime
+
+If you are validating against the current executable challenge workflow, the most relevant next pages are:
+
+- [Challenge Overview](challenge/overview.md)
+- [Challenge Getting Started](challenge/getting_started.md)
+- [Challenge Agent Integration Guide](challenge/integration_guide.md)
+- [Challenge Submission Format](challenge/submission_format.md)
+
+Use these pages when you need the current mounted-path contract, the official runner path under `/app/agent`, the current adapter entry through `CHALLENGE_AGENT`, or the Docker-based local validation flow.
+
 ## Reference Material
 
 If you need more detail, the reference pages are still available:
 
 - installation details: [Dependencies](quick_start/dependencies.md), [Installation Steps](quick_start/installation.md), [Data Download](quick_start/data.md)
-- integration details: [Agent Integration Notes](quick_start/integration.md)
+- integration details for local method development outside the Docker challenge runtime: [Agent Integration Notes](quick_start/integration.md)
 - simulator and metric APIs: [Human State](api/human_state.md), [Scene Updates](api/scene_updates.md), [Collision Checks](api/collision_checks.md), [Evaluation Metrics](api/evaluation_metrics.md)

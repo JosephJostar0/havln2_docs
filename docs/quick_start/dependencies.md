@@ -2,7 +2,7 @@
 
 Official HA-VLN repository: https://github.com/F1y1113/HA-VLN
 
-This page provides the participant-facing dependency setup for HA-VLN.
+This page provides the dependency setup for HA-VLN.
 
 The original repository README was written around a Python 3.7 and CUDA 11.1 era stack. For broader compatibility on newer Linux distributions and newer NVIDIA GPUs, the participant docs use a Python 3.8 based environment as the default path.
 

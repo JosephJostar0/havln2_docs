@@ -54,14 +54,40 @@ At minimum, your local setup should include the required Matterport3D Habitat as
 
 ### 5. Verify the environment before agent development
 
-Before writing or adapting your own agent, confirm that the environment imports correctly and that the required data paths exist.
+Before writing or adapting your own agent, confirm both of the following:
 
-Minimal checks:
+- the Python and simulator environment imports correctly
+- the HA-VLN runtime and data paths are available from the repository checkout
+
+#### Basic environment checks
+
+These checks only confirm that the base Python environment is usable:
 
 ```bash
 python -c "import torch; print(torch.__version__)"
 python -c "import habitat_sim; print('habitat-sim OK')"
 ```
+
+#### HA-VLN runtime checks
+
+Use a slightly stronger check from the repository root to confirm that the HA-VLN-specific packages and config path can be resolved through the same local import-path setup used by the challenge runner:
+
+```bash
+python -c "import os, sys; repo = os.getcwd(); sys.path.insert(0, repo); sys.path.insert(0, os.path.join(repo, 'agent')); sys.path.insert(0, os.path.join(repo, 'agent', 'VLN-CE')); import HASimulator, habitat_extensions, vlnce_baselines; print('HA-VLN runtime OK')"
+python -c "import os, sys; repo = os.getcwd(); sys.path.insert(0, repo); sys.path.insert(0, os.path.join(repo, 'agent')); sys.path.insert(0, os.path.join(repo, 'agent', 'VLN-CE')); from vlnce_baselines.config.default import get_config; cfg = get_config('agent/config/challenge_submission.yaml', []); print(cfg.BASE_TASK_CONFIG_PATH)"
+```
+
+These checks are still lightweight. They do not prove that a full evaluation run will succeed, but they are much closer to the actual HA-VLN workflow than import-only checks for `torch` or `habitat_sim`.
+
+#### Data-path sanity checks
+
+Before moving on, make sure the required public paths are actually present under `Data/`.
+
+For example, confirm that your checkout contains the expected public assets described in [Data Download](../quick_start/data.md), including:
+
+- the HA-R2R dataset files
+- the HAPS 2.0 human assets
+- the required Matterport3D Habitat scene assets
 
 ## What You Should Have at the End of This Step
 
@@ -71,6 +97,14 @@ When this step is complete, you should have:
 - a runnable simulator environment
 - the public dataset prepared under `Data/`
 - enough runtime support to begin developing your own agent
+
+## What To Do If You Plan To Use the Docker Challenge Runtime
+
+If your goal is local validation against the current official challenge runtime, the next step after basic installation is not submission packaging yet. First make sure your own method can run against the HA-VLN environment, then continue with:
+
+- [Develop Your Agent](develop_agent.md)
+- [Test Your Agent](test_agent.md)
+- [Challenge Getting Started](../challenge/getting_started.md)
 
 ## Next Step
 
