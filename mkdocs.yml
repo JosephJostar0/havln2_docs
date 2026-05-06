@@ -1,5 +1,5 @@
 site_name: HA-VLN Docs
-site_description: Participant documentation for HA-VLN
+site_description: Documentation for the HA-VLN human-aware navigation dataset and environments
 repo_url: https://github.com/F1y1113/HA-VLN
 repo_name: F1y1113/HA-VLN
 theme:
@@ -21,9 +21,9 @@ extra_javascript:
 
 nav:
   - Start Here: index.md
-  - 1. Install HASimulator And Get Data: participant/install_and_data.md
-  - 2. Develop Your Agent: participant/develop_agent.md
-  - 3. Test Your Agent: participant/test_agent.md
+  - 1. Install HASimulator and Get Data: participant/install_and_data.md
+  - 2. Develop an Agent: participant/develop_agent.md
+  - 3. Test an Agent: participant/test_agent.md
   - Reference:
       - Dependencies: quick_start/dependencies.md
       - Installation Steps: quick_start/installation.md
@@ -33,8 +33,3 @@ nav:
       - Dynamic Scene Updates: api/scene_updates.md
       - Collision Checks: api/collision_checks.md
       - Evaluation Metrics: api/evaluation_metrics.md
-  - Challenge Runtime:
-      - Overview: challenge/overview.md
-      - Getting Started: challenge/getting_started.md
-      - Agent Integration: challenge/integration_guide.md
-      - Submission Format: challenge/submission_format.md

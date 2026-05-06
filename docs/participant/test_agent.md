@@ -1,10 +1,10 @@
 # Test Your Agent
 
-This page is for participants who already have a runnable HA-VLN agent and want to validate it.
+This page is for researchers and developers who already have a runnable HA-VLN agent and want to validate it.
 
-From a participant perspective, testing answers one question:
+From a development perspective, testing answers one question:
 
-- can my agent run correctly on the public HA-VLN workflow before submission?
+- can my agent run correctly on the public HA-VLN workflow?
 
 ## What to Test
 
@@ -36,33 +36,21 @@ Use:
 - [Collision Checks](../api/collision_checks.md)
 - [Evaluation Metrics](../api/evaluation_metrics.md)
 
-### 3. Use the participant runtime workflow when needed
-
-If you are using the current Docker-based participant workflow, the integrated challenge pages describe the current runtime contract and testing interface:
-
-- [Challenge Getting Started](../challenge/getting_started.md)
-- [Challenge Agent Integration Guide](../challenge/integration_guide.md)
-- [Challenge Submission Format](../challenge/submission_format.md)
-
-These pages are useful when you want to confirm the current executable participant interface such as mounted paths, the official runner path, and `run.sh` behavior.
-
 ## Recommended First Validation Loop
 
-If you are validating against the current Docker challenge workflow, a practical first loop is:
+A practical first loop is:
 
 1. run your package on a public split such as `val_unseen`
-2. confirm that `run.sh` starts cleanly and enters the official runner path
-3. inspect the host-visible result files produced by your current local workflow
+2. confirm that the evaluation script starts cleanly and uses the intended HA-VLN task configuration
+3. inspect the result files produced by your current local workflow
 4. read the exported score summary before debugging deeper issues
 
-In the current workflow, exported files under `/app/result` often include:
+Depending on your launch script, exported files often include:
 
 - `score_summary.json`
 - `episode_metrics.json`
 - `stats_ckpt_0_<split>.json`
-- `challenge_eval.log`
-
-The current local workflow uses `/app/result` as the default output location, so these files are usually easiest to inspect there.
+- evaluation logs
 
 ## Practical Testing Checklist
 
@@ -70,7 +58,6 @@ Before you move on, confirm that:
 
 - your agent loads the correct HA-VLN task configuration
 - the required public data exists under the expected paths
-- your `run.sh` prepares the runtime and then launches the official runner path
 - your agent can finish evaluation runs without runtime errors
 - the outputs you care about are written correctly
 - your metrics are interpretable and consistent with HA-VLN definitions
@@ -85,17 +72,9 @@ If the environment boots but evaluation fails quickly, check:
 - checkpoint paths inside the mounted package
 - whether your code is still using host-side absolute paths instead of container paths
 
-### Runner contract mismatch
-
-If your package starts but does not behave like the current challenge workflow, check whether `run.sh` is still launching:
-
-```bash
-python /app/agent/run.py --run-type eval --exp-config /app/agent/config/challenge_submission.yaml RESULTS_DIR /app/result LOG_FILE /app/result/challenge_eval.log
-```
-
 ### Metrics look surprising
 
-If plain success looks reasonable but challenge-facing `SR` looks low, revisit:
+If plain success looks reasonable but strict success `SR` looks low, revisit:
 
 - [Evaluation Metrics](../api/evaluation_metrics.md)
 - [Collision Checks](../api/collision_checks.md)
@@ -108,4 +87,3 @@ For low-level integration and evaluation details, see:
 
 - [Agent Integration Notes](../quick_start/integration.md)
 - [Evaluation Metrics](../api/evaluation_metrics.md)
-- [Challenge Runtime Docs](../challenge/overview.md)

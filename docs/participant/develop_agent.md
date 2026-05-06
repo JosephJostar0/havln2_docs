@@ -1,18 +1,18 @@
 # Develop Your Agent
 
-This page is for participants who want to build their own agent on top of HA-VLN.
+This page is for researchers and developers who want to build or adapt an agent on top of HA-VLN.
 
 The main idea is straightforward:
 
 - HA-VLN provides the simulator and the public data
-- you provide your own navigation agent
+- you provide or adapt a navigation agent
 - your agent interacts with the HA-VLN environment through the simulator/task configuration and available APIs
 
-The repository `agent/` directory should be treated as reference code and baseline material, not as a required starting point. Participants are free to build their own agent code as long as it is compatible with the HA-VLN environment and the challenge runtime interface.
+The repository `agent/` directory should be treated as reference code and baseline material, not as a required starting point. You are free to build your own agent code as long as it is compatible with the HA-VLN environment and evaluation workflow.
 
-## What Participants Usually Need from the Simulator
+## What Developers Usually Need from the Simulator
 
-When developing an agent, participants typically need to understand three things:
+When developing an agent, you typically need to understand three things:
 
 1. how to point their code to the HA-VLN task configuration
 2. which simulator or task APIs expose dynamic-human information
@@ -57,7 +57,7 @@ Use these when you want to understand how success and collision-aware performanc
 
 ## Typical Development Workflow
 
-A practical participant workflow is:
+A practical development workflow is:
 
 1. start from an existing VLN agent or your own new implementation
 2. switch it to the HA-VLN task configuration
@@ -68,19 +68,16 @@ A practical participant workflow is:
 ## Important Development Notes
 
 - HA-VLN is not limited to one specific agent architecture
-- participants are expected to develop their own agents
-- the repository `agent/` directory is optional reference material rather than required submission code
+- you can develop your own agent or adapt an existing one
+- the repository `agent/` directory is optional reference material rather than required agent code
 - the important requirement is compatibility with the HA-VLN environment and evaluation workflow
 
 If you need low-level integration details such as wrapper synchronization, provided text resources, or metric injection, read:
 
 - [Agent Integration Notes](../quick_start/integration.md)
 
-If your eventual goal is the current Docker challenge workflow, treat this page as the method-development step in a local environment and then continue to the challenge runtime pages after your method runs locally. The executable challenge contract itself is defined by the challenge pages, not by this local-development guide.
-
 ## Next Step
 
 After your agent can run inside HA-VLN, move on to:
 
 - [Test Your Agent](test_agent.md)
-- [Challenge Getting Started](../challenge/getting_started.md)

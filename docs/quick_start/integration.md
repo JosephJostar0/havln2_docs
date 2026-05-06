@@ -2,9 +2,9 @@
 
 Official HA-VLN repository: https://github.com/F1y1113/HA-VLN
 
-This page explains how to connect your own agent to the HA-VLN environment for local method development outside the executable Docker challenge contract.
+This page explains how to connect your own agent to the HA-VLN environment for local method development.
 
-The goal of this page is practical integration, not to force a specific model architecture. The repository `agent/` directory is reference material only. What matters for participants is that their own agent can run correctly with the HA-VLN task configuration, simulator APIs, and evaluation workflow.
+The goal of this page is practical integration, not to force a specific model architecture. The repository `agent/` directory is reference material only. What matters is that your agent can run correctly with the HA-VLN task configuration, simulator APIs, and evaluation workflow.
 
 ### 1. Redirect Base Task Config
 

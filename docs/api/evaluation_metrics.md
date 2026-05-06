@@ -4,14 +4,14 @@ This document explains the evaluation metrics used in the current HA-VLN evaluat
 
 ## Overview
 
-The current evaluator exposes four core challenge-facing metrics:
+The current evaluator exposes four core human-aware metrics:
 
 1. **Strict Success (`SR`)**
 2. **Trajectory Collision Rate (`TCR`)**
 3. **Navigation Error (`NE`)**
 4. **Collision Rate (`CR`)**
 
-The evaluator also keeps the underlying environment `success` signal. In the current HA-VLN challenge workflow, `SR` is stricter than plain `success`.
+The evaluator also keeps the underlying environment `success` signal. In HA-VLN, `SR` is stricter than plain `success` because it also accounts for human-collision behavior.
 
 ## Current Evaluator Outputs
 
@@ -27,10 +27,10 @@ At the episode level, the current evaluator writes fields such as:
 
 At the summary level, the current evaluator exposes two closely related summary views:
 
-- `score_summary.json`, which writes `SR`, `TCR`, `CR`, and `NE`
+- `score_summary.json`, which may write `SR`, `TCR`, `CR`, and `NE`
 - `stats_ckpt_0_<split>.json`, which keeps the raw aggregated metric keys, including `distance_to_goal`
 
-In the current implementation, `NE` is the challenge-facing summary name for the aggregated `distance_to_goal` value.
+In the current implementation, `NE` is the summary name for the aggregated `distance_to_goal` value.
 
 ## Metric Definitions
 
@@ -132,7 +132,7 @@ Important note:
 
 ### What Counts as a Collision Here?
 
-In the current HA-VLN challenge workflow, the human-aware metrics are meant to reflect interaction with dynamic humans rather than only static-scene collisions.
+The human-aware metrics are meant to reflect interaction with dynamic humans rather than only static-scene collisions.
 
 ### Why `TCR` and `CR` Both Matter
 
@@ -146,9 +146,9 @@ Together they help distinguish frequency from severity.
 - `success` tells you whether the episode satisfied the environment success condition
 - `SR` tells you whether the episode was both successful and collision-clean under the strict HA-VLN rule
 
-This is why two agents with similar plain success can still differ on the challenge-facing `SR` metric.
+This is why two agents with similar plain success can still differ on the stricter HA-VLN `SR` metric.
 
-## Practical Implications for Participants
+## Practical Implications for Development
 
 When iterating on your own agent, use these metrics together rather than optimizing only one of them.
 
@@ -161,11 +161,8 @@ Useful questions to ask are:
 ## Notes
 
 - this page follows the current code path in `HASimulator/metric.py` and `agent/eval.py`
-- exact final challenge ranking and reporting details may still be refined
 - if future evaluator code changes the exported metric definitions, the documentation should be updated to match the code
 
 ## Further Reading
 
-- [Challenge Overview](../challenge/overview.md)
-- [Agent Integration Guide](../challenge/integration_guide.md)
 - [Collision Checks](collision_checks.md)

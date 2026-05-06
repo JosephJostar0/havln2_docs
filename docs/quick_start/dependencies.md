@@ -4,7 +4,7 @@ Official HA-VLN repository: https://github.com/F1y1113/HA-VLN
 
 This page provides the dependency setup for HA-VLN.
 
-The original repository README was written around a Python 3.7 and CUDA 11.1 era stack. For broader compatibility on newer Linux distributions and newer NVIDIA GPUs, the participant docs use a Python 3.8 based environment as the default path.
+The original repository README was written around a Python 3.7 and CUDA 11.1 era stack. For broader compatibility on newer Linux distributions and newer NVIDIA GPUs, these docs use a Python 3.8 based environment as the default path.
 
 ### System Packages
 
@@ -36,7 +36,7 @@ export CUDA_HOME=$CONDA_PREFIX
 
 ### Core Python Packages
 
-Install a modern CUDA-compatible stack for participant development:
+Install a modern CUDA-compatible stack for development:
 
 ```bash
 # Full CUDA toolkit for compilation and runtime compatibility
@@ -52,6 +52,6 @@ The short answer is compatibility.
 
 - the original repository README reflects an older Python 3.7 era environment
 - newer GPUs may require a newer CUDA and PyTorch combination than the Python 3.7 path typically supports well
-- the participant docs therefore use Python 3.8 as the default installation path for broader compatibility on modern hardware
+- these docs therefore use Python 3.8 as the default installation path for broader compatibility on modern hardware
 
-If you are working on older hardware with an older toolchain, the original Python 3.7 path may still be possible, but it is not the default participant recommendation in this documentation.
+If you are working on older hardware with an older toolchain, the original Python 3.7 path may still be possible, but it is not the default recommendation in this documentation.

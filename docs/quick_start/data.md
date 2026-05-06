@@ -2,11 +2,11 @@
 
 Official HA-VLN repository: https://github.com/F1y1113/HA-VLN
 
-This page explains where participants should download the required data, which parts require separate access, and how to place the downloaded files into the repository `Data/` directory.
+This page explains where to download the required data, which parts require separate access, and how to place the downloaded files into the repository `Data/` directory.
 
 ## What You Need to Download
 
-For a usable HA-VLN setup, participants typically need four data groups:
+For a usable HA-VLN setup, you typically need four data groups:
 
 1. Matterport3D scene assets used by Habitat and the simulator
 2. the public HA-R2R dataset
@@ -42,9 +42,9 @@ python3 download_mp.py -o Data/scene_datasets --task habitat
 unzip Data/scene_datasets/v1/tasks/mp3d_habitat.zip -d Data/scene_datasets/
 ```
 
-### Recommended Participant Guidance
+### Recommended Guidance
 
-For the current participant workflow, use the Habitat task-data path:
+For the current public workflow, use the Habitat task-data path:
 
 ```bash
 python3 download_mp.py -o Data/scene_datasets --task habitat
@@ -57,7 +57,7 @@ This prepares Habitat-compatible scene assets under `Data/scene_datasets/`.
 
 The public HA-VLN datasets are distributed separately from Matterport3D.
 
-The original README points participants to these public dataset entries:
+The original README points to these public dataset entries:
 
 - Hugging Face dataset: `https://huggingface.co/datasets/fly1113/HA-VLN`
 - Google Drive dataset folder: `https://drive.google.com/drive/folders/1WrdsRSPp-xJkImZ3CnI7Ho90lnhzp5GR?usp=sharing`
@@ -81,7 +81,7 @@ bash scripts/download_data.sh
 - download the public HA-R2R archive into `Data/HAR2R-CE.zip`
 - extract it into `Data/HA-R2R/`
 
-This means participants normally do not need to manually reorganize those two datasets if they use the provided script.
+This means you normally do not need to manually reorganize those two datasets if you use the provided script.
 
 ## 3. Optional DD-PPO Baseline Weights
 
@@ -129,7 +129,7 @@ Data/
 
 ## Provided Text Resources
 
-The public HA-R2R data already provides text resources that many participants can use directly.
+The public HA-R2R data already provides text resources that many agents can use directly.
 
 ### 1. Built-in Instruction Vocabulary
 
@@ -147,7 +147,7 @@ The public splits also include pre-tokenized BERT-format files:
 
 If your method uses a BERT-style text encoder, these files are the first thing to check before doing any custom preprocessing.
 
-## Recommended Guidance for Participants
+## Recommended Guidance
 
 - if your method uses a classic word-level vocabulary, first try the vocabulary already bundled in the HA-R2R dataset files
 - if your method uses BERT-style text encoding, first try the provided `*_bertidx.json.gz` files

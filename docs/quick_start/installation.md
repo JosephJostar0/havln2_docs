@@ -97,6 +97,6 @@ python -c "import habitat_sim; print('habitat-sim OK')"
 
 ### FAQ: Why does this page use Python 3.8 instead of the original README's Python 3.7?
 
-The original README reflects an older environment. The participant docs use Python 3.8 as the default path because it is a more practical compatibility baseline for newer GPUs and newer CUDA/PyTorch combinations.
+The original README reflects an older environment. These docs use Python 3.8 as the default path because it is a more practical compatibility baseline for newer GPUs and newer CUDA/PyTorch combinations.
 
-For participants, the important takeaway is simple: follow the Python 3.8 path in this documentation unless you have a specific reason to maintain an older legacy environment.
+The important takeaway is simple: follow the Python 3.8 path in this documentation unless you have a specific reason to maintain an older legacy environment.

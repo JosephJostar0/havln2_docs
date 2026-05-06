@@ -1,6 +1,6 @@
 # Install HASimulator and Get Public Data
 
-This page is for participants who are setting up HA-VLN for the first time.
+This page is for researchers and developers who are setting up HA-VLN for the first time.
 
 Your goal in this step is simple:
 
@@ -23,7 +23,7 @@ For installation details, use these reference pages:
 - [Installation Steps](../quick_start/installation.md)
 - [Data Download](../quick_start/data.md)
 
-These pages already use the Python 3.8 based participant setup path.
+These pages use the Python 3.8 based setup path.
 
 ## Recommended Setup Order
 
@@ -46,7 +46,7 @@ The installation flow includes the HA-VLN runtime together with Habitat-Sim and 
 
 ### 4. Prepare the public data under `Data/`
 
-Participants should place the public HA-VLN data under the repository `Data/` directory. The full download sources, Matterport3D access note, extraction commands, and final layout are described in:
+Place the public HA-VLN data under the repository `Data/` directory. The full download sources, Matterport3D access note, extraction commands, and final layout are described in:
 
 - [Data Download](../quick_start/data.md)
 
@@ -70,11 +70,10 @@ python -c "import habitat_sim; print('habitat-sim OK')"
 
 #### HA-VLN runtime checks
 
-Use a slightly stronger check from the repository root to confirm that the HA-VLN-specific packages and config path can be resolved through the same local import-path setup used by the challenge runner:
+Use a slightly stronger check from the repository root to confirm that the HA-VLN-specific packages and config path can be resolved through the local import-path setup used by the evaluation workflow:
 
 ```bash
 python -c "import os, sys; repo = os.getcwd(); sys.path.insert(0, repo); sys.path.insert(0, os.path.join(repo, 'agent')); sys.path.insert(0, os.path.join(repo, 'agent', 'VLN-CE')); import HASimulator, habitat_extensions, vlnce_baselines; print('HA-VLN runtime OK')"
-python -c "import os, sys; repo = os.getcwd(); sys.path.insert(0, repo); sys.path.insert(0, os.path.join(repo, 'agent')); sys.path.insert(0, os.path.join(repo, 'agent', 'VLN-CE')); from vlnce_baselines.config.default import get_config; cfg = get_config('agent/config/challenge_submission.yaml', []); print(cfg.BASE_TASK_CONFIG_PATH)"
 ```
 
 These checks are still lightweight. They do not prove that a full evaluation run will succeed, but they are much closer to the actual HA-VLN workflow than import-only checks for `torch` or `habitat_sim`.
@@ -97,14 +96,6 @@ When this step is complete, you should have:
 - a runnable simulator environment
 - the public dataset prepared under `Data/`
 - enough runtime support to begin developing your own agent
-
-## What To Do If You Plan To Use the Docker Challenge Runtime
-
-If your goal is local validation against the current official challenge runtime, the next step after basic installation is not submission packaging yet. First make sure your own method can run against the HA-VLN environment, then continue with:
-
-- [Develop Your Agent](develop_agent.md)
-- [Test Your Agent](test_agent.md)
-- [Challenge Getting Started](../challenge/getting_started.md)
 
 ## Next Step
 
