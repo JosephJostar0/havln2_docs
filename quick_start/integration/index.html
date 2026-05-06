@@ -1,0 +1,1034 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for the HA-VLN human-aware navigation dataset and environments">
+      
+      
+      
+      
+        <link rel="prev" href="../data/">
+      
+      
+        <link rel="next" href="../../api/human_state/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Agent Integration Notes - HA-VLN Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#agent-integration" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="HA-VLN Docs" class="md-header__button md-logo" aria-label="HA-VLN Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            HA-VLN Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Agent Integration Notes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/F1y1113/HA-VLN" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    F1y1113/HA-VLN
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="HA-VLN Docs" class="md-nav__button md-logo" aria-label="HA-VLN Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    HA-VLN Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/F1y1113/HA-VLN" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    F1y1113/HA-VLN
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start Here
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../participant/install_and_data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Install HASimulator and Get Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../participant/develop_agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Develop an Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../participant/test_agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Test an Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dependencies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation Steps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data Download
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Integration Notes
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Integration Notes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#agent-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Agent Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-redirect-base-task-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Redirect Base Task Config
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-choose-the-task-variant-you-need" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Choose the Task Variant You Need
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-synchronize-with-the-dynamic-human-timeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Synchronize with the Dynamic Human Timeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-use-the-provided-text-resources-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Use the Provided Text Resources First
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-integrate-human-aware-metrics-in-eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Integrate Human-Aware Metrics in Eval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-optional-human-counting-and-visualization-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Optional Human Counting and Visualization Hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-api-cross-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. API Cross-Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/human_state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Human State Queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/scene_updates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dynamic Scene Updates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/collision_checks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Collision Checks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/evaluation_metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluation Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#agent-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Agent Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-redirect-base-task-config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Redirect Base Task Config
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-choose-the-task-variant-you-need" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Choose the Task Variant You Need
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-synchronize-with-the-dynamic-human-timeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Synchronize with the Dynamic Human Timeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-use-the-provided-text-resources-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Use the Provided Text Resources First
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-integrate-human-aware-metrics-in-eval" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Integrate Human-Aware Metrics in Eval
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-optional-human-counting-and-visualization-hook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Optional Human Counting and Visualization Hook
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-api-cross-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. API Cross-Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Agent Integration Notes</h1>
+
+<h2 id="agent-integration">Agent Integration</h2>
+<p>Official HA-VLN repository: https://github.com/F1y1113/HA-VLN</p>
+<p>This page explains how to connect your own agent to the HA-VLN environment for local method development.</p>
+<p>The goal of this page is practical integration, not to force a specific model architecture. The repository <code>agent/</code> directory is reference material only. What matters is that your agent can run correctly with the HA-VLN task configuration, simulator APIs, and evaluation workflow.</p>
+<h3 id="1-redirect-base-task-config">1. Redirect Base Task Config</h3>
+<p>Redirect <code>BASE_TASK_CONFIG_PATH</code> in your agent configuration to the HA-VLN task config:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">BASE_TASK_CONFIG_PATH</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">path/to/HASimulator/config/HAVLNCE_task.yaml</span>
+</code></pre></div>
+<p>Also verify the following key switches:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">SIMULATOR</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">ADD_HUMAN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">  </span><span class="nt">ALLOW_SLIDING</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">  </span><span class="nt">HUMAN_COUNTING</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+
+<span class="nt">TASK</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">MEASUREMENTS</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">COLLISIONS_DETAIL</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DISTANCE_TO_HUMAN</span>
+</code></pre></div>
+<p>Important path note:</p>
+<ul>
+<li><code>HAVLNCE_task.yaml</code> often contains relative paths such as <code>../Data/...</code></li>
+<li>these paths are resolved against the process CWD where your agent starts</li>
+<li>if your launcher runs in another directory, switch those paths to absolute paths to avoid silent file-not-found failures</li>
+</ul>
+<h3 id="2-choose-the-task-variant-you-need">2. Choose the Task Variant You Need</h3>
+<p>If you are comparing settings or running ablations, switch only <code>BASE_TASK_CONFIG_PATH</code> while keeping the rest of your agent code unchanged:</p>
+<ul>
+<li><code>HAVLNCE_task.yaml</code>: dynamic environment + HA-R2R instructions</li>
+<li><code>HAVLNCE_R2R_task.yaml</code>: dynamic environment + original R2R instructions</li>
+<li><code>VLNCE_task.yaml</code>: static environment + original R2R instructions</li>
+<li><code>VLNCE_HAR2R_task.yaml</code>: static environment + HA-R2R instructions</li>
+</ul>
+<h3 id="3-synchronize-with-the-dynamic-human-timeline">3. Synchronize with the Dynamic Human Timeline</h3>
+<p>Consume dynamic-scene clock signals before <code>step()</code> so each agent action runs on the latest physical state.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">habitat.core.env</span><span class="w"> </span><span class="kn">import</span> <span class="n">Env</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">HASimulator.environments</span><span class="w"> </span><span class="kn">import</span> <span class="n">HAVLNCE</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HAVLNWrapper</span><span class="p">(</span><span class="n">Env</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_dynamic_human</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">TASK_CONFIG</span><span class="o">.</span><span class="n">SIMULATOR</span><span class="p">,</span> <span class="s2">&quot;ADD_HUMAN&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_dynamic_human</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">havlnce_tool</span> <span class="o">=</span> <span class="n">HAVLNCE</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="o">.</span><span class="n">TASK_CONFIG</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sim</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">havlnce_tool</span><span class="o">.</span><span class="n">_reset_signal_queue_and_counters</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_dynamic_human</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">havlnce_tool</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_dynamic_human</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">havlnce_tool</span><span class="o">.</span><span class="n">_handle_signals</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+</code></pre></div>
+<p>Why this matters:</p>
+<ul>
+<li>HA-VLN advances human motions using a child-thread clock</li>
+<li>without <code>_handle_signals()</code> before each step, policy actions may be evaluated on stale geometry or stale NavMesh</li>
+</ul>
+<h3 id="4-use-the-provided-text-resources-first">4. Use the Provided Text Resources First</h3>
+<p>Before building custom text preprocessing, check the text resources already bundled with HA-R2R:</p>
+<ul>
+<li>the main dataset files such as <code>Data/HA-R2R/train/train.json.gz</code> include <code>instruction_vocab.word_list</code></li>
+<li>the public splits also provide pre-tokenized BERT-format files such as <code>train_bertidx.json.gz</code>, <code>val_seen_bertidx.json.gz</code>, and <code>val_unseen_bertidx.json.gz</code></li>
+</ul>
+<p>Recommended guidance:</p>
+<ul>
+<li>if your method uses a classic word-level vocabulary, first try the vocabulary bundled in the HA-R2R dataset files</li>
+<li>if your method uses a BERT-style text encoder, first try the provided <code>*_bertidx.json.gz</code> files</li>
+<li>only build or extend your own text pipeline if your method truly requires it</li>
+</ul>
+<h3 id="5-integrate-human-aware-metrics-in-eval">5. Integrate Human-Aware Metrics in Eval</h3>
+<p>After each episode ends, you can inject TCR, CR, and strict SR and strip high-dimensional fields before aggregation:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">HASimulator.metric</span><span class="w"> </span><span class="kn">import</span> <span class="n">Calculate_Metric</span>
+
+<span class="n">metric_calc</span> <span class="o">=</span> <span class="n">Calculate_Metric</span><span class="p">(</span><span class="n">split</span><span class="o">=</span><span class="s2">&quot;val_unseen&quot;</span><span class="p">)</span>
+<span class="n">metric_calc</span><span class="p">(</span><span class="n">stats_episodes</span><span class="p">[</span><span class="n">ep_id</span><span class="p">],</span> <span class="n">ep_id</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;distance_to_human&quot;</span><span class="p">,</span> <span class="s2">&quot;collisions_detail&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">stats_episodes</span><span class="p">[</span><span class="n">ep_id</span><span class="p">]:</span>
+        <span class="n">stats_info</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">ep_id</span><span class="p">,</span> <span class="p">{})[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats_episodes</span><span class="p">[</span><span class="n">ep_id</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</code></pre></div>
+<p>Metric semantics:</p>
+<ul>
+<li><code>TCR</code>: net new trajectory collisions after excluding the pre-computed unavoidable collision component</li>
+<li><code>CR</code>: collision flag for the episode</li>
+<li><code>SR</code>: strict success rate under the extra condition <code>TCR == 0</code></li>
+</ul>
+<h3 id="6-optional-human-counting-and-visualization-hook">6. Optional Human Counting and Visualization Hook</h3>
+<p>If <code>HUMAN_COUNTING: True</code>, ensure GroundingDINO is installed and the weight path is configured correctly in <code>detector.py</code> before evaluation.</p>
+<p>You can also stitch observation frames and instruction text inside the evaluation loop for debugging videos.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">habitat_extensions.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">observations_to_image</span><span class="p">,</span> <span class="n">generate_video</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">habitat.utils.visualizations.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">append_text_to_image</span>
+
+<span class="n">rgb_frames</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">envs</span><span class="o">.</span><span class="n">num_envs</span><span class="p">)]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">envs</span><span class="o">.</span><span class="n">num_envs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">VIDEO_OPTION</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">TASK_CONFIG</span><span class="o">.</span><span class="n">SIMULATOR</span><span class="o">.</span><span class="n">HUMAN_COUNTING</span><span class="p">:</span>
+            <span class="n">observations_</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">observations</span><span class="p">)</span>
+            <span class="n">observations_</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;rgb&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">detected_img</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">observations_to_image</span><span class="p">(</span><span class="n">observations_</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">infos</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">observations_to_image</span><span class="p">(</span><span class="n">observations</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">infos</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">append_text_to_image</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">current_episodes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">instruction</span><span class="o">.</span><span class="n">instruction_text</span><span class="p">)</span>
+        <span class="n">rgb_frames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">dones</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">VIDEO_OPTION</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ep_id</span> <span class="o">=</span> <span class="n">current_episodes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">episode_id</span>
+        <span class="n">generate_video</span><span class="p">(</span>
+            <span class="n">video_option</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">VIDEO_OPTION</span><span class="p">,</span>
+            <span class="n">video_dir</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">VIDEO_DIR</span><span class="p">,</span>
+            <span class="n">images</span><span class="o">=</span><span class="n">rgb_frames</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+            <span class="n">episode_id</span><span class="o">=</span><span class="n">ep_id</span><span class="p">,</span>
+            <span class="n">checkpoint_idx</span><span class="o">=</span><span class="n">checkpoint_index</span><span class="p">,</span>
+            <span class="n">metrics</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;spl&quot;</span><span class="p">:</span> <span class="n">stats_episodes</span><span class="p">[</span><span class="n">ep_id</span><span class="p">][</span><span class="s2">&quot;spl&quot;</span><span class="p">]},</span>
+            <span class="n">tb_writer</span><span class="o">=</span><span class="n">writer</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">rgb_frames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+</code></pre></div>
+<h3 id="7-api-cross-reference">7. API Cross-Reference</h3>
+<p>Use the API pages together with this integration guide:</p>
+<ul>
+<li>human distance, angle, and counting hooks: <code>api/human_state.md</code></li>
+<li>clock sync and forced frame controls: <code>api/scene_updates.md</code></li>
+<li>collision detail and strict human-aware metrics: <code>api/collision_checks.md</code></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
